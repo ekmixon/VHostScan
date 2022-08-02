@@ -17,7 +17,7 @@ DEFAULT_WORDLIST_FILE = resource_filename(
 
 
 def print_banner():
-    print("+-+-+-+-+-+-+-+-+-+  v. {}".format(__version__))
+    print(f"+-+-+-+-+-+-+-+-+-+  v. {__version__}")
     print("|V|H|o|s|t|S|c|a|n|  Developed by @codingo_ & @__timk")
     print("+-+-+-+-+-+-+-+-+-+  https://github.com/codingo/VHostScan\n")
 
@@ -59,14 +59,10 @@ def main():
     if(arguments.add_waf_bypass_headers):
         print("[>] WAF flag set, sending simple WAF bypass headers.")
 
-    print("[>] Ignoring HTTP codes: {}".format(arguments.ignore_http_codes))
+    print(f"[>] Ignoring HTTP codes: {arguments.ignore_http_codes}")
 
-    if(arguments.ignore_content_length > 0):
-        print(
-            "[>] Ignoring Content length: {}".format(
-                arguments.ignore_content_length
-            )
-        )
+    if (arguments.ignore_content_length > 0):
+        print(f"[>] Ignoring Content length: {arguments.ignore_content_length}")
 
     if arguments.first_hit:
         print("[>] First hit is set.")
@@ -88,14 +84,13 @@ def main():
             print("[!] Couldn't find any records (NoAnswer)")
 
     if arguments.verbose:
-        print("[>] Scanning with {} items in wordlist".format(len(wordlist)))
+        print(f"[>] Scanning with {len(wordlist)} items in wordlist")
 
-    scanner_args = vars(arguments)
-    scanner_args.update({
+    scanner_args = vars(arguments) | {
         'target': arguments.target_hosts,
         'wordlist': wordlist,
-        'user_agents': user_agents
-    })
+        'user_agents': user_agents,
+    }
 
     scanner = virtual_host_scanner(**scanner_args)
     scanner.scan()
@@ -106,20 +101,17 @@ def main():
     if(arguments.fuzzy_logic):
         print(output.output_fuzzy())
 
-    if(arguments.output_normal):
+    if arguments.output_normal:
         output.write_normal(arguments.output_normal)
-        print("\n[+] Writing normal ouptut to {}".format(
-            arguments.output_normal))
+        print(f"\n[+] Writing normal ouptut to {arguments.output_normal}")
 
-    if(arguments.output_json):
+    if arguments.output_json:
         output.output_json(arguments.output_json)
-        print("\n[+] Writing json output to {}".format(
-            arguments.output_json))
+        print(f"\n[+] Writing json output to {arguments.output_json}")
 
-    if(arguments.output_grepable):
+    if arguments.output_grepable:
         output.output_grepable(arguments.output_grepable)
-        print("\n[+] Writing grepable ouptut to {}".format(
-            arguments.output_json))
+        print(f"\n[+] Writing grepable ouptut to {arguments.output_json}")
 
 
 if __name__ == "__main__":

@@ -93,7 +93,7 @@ class virtual_host_scanner(object):
 
         # available user-agents
         self.user_agents = list(kwargs.get('user_agents')) \
-            or [DEFAULT_USER_AGENT]
+                or [DEFAULT_USER_AGENT]
 
     @property
     def ignore_http_codes(self):
@@ -121,7 +121,7 @@ class virtual_host_scanner(object):
             if self.real_port == 80:
                 host_header = hostname
             else:
-                host_header = '{}:{}'.format(hostname, self.real_port)
+                host_header = f'{hostname}:{self.real_port}'
 
             headers = {
                 'User-Agent': random.choice(self.user_agents),
@@ -130,18 +130,15 @@ class virtual_host_scanner(object):
             }
 
             if self.add_waf_bypass_headers:
-                headers.update({
+                headers |= {
                     'X-Originating-IP': '127.0.0.1',
                     'X-Forwarded-For': '127.0.0.1',
                     'X-Remote-IP': '127.0.0.1',
-                    'X-Remote-Addr': '127.0.0.1'
-                })
+                    'X-Remote-Addr': '127.0.0.1',
+                }
 
-            dest_url = '{}://{}:{}/'.format(
-                'https' if self.ssl else 'http',
-                self.target,
-                self.port
-            )
+
+            dest_url = f"{'https' if self.ssl else 'http'}://{self.target}:{self.port}/"
 
             _target_host = hostname
 
@@ -155,7 +152,7 @@ class virtual_host_scanner(object):
 
             response_length = int(res.headers.get('content-length', 0))
             if self.ignore_content_length and \
-               self.ignore_content_length == response_length:
+                   self.ignore_content_length == response_length:
                 continue
 
             # hash the page results to aid in identifing unique content
@@ -202,12 +199,8 @@ class virtual_host_scanner(object):
         Creates a host using the responce and the hash.
         Prints current result in real time.
         """
-        output = '[#] Found: {} (code: {}, length: {}, hash: {})\n'.format(
-            hostname,
-            response.status_code,
-            response.headers.get('content-length'),
-            page_hash
-        )
+        output = f"[#] Found: {hostname} (code: {response.status_code}, length: {response.headers.get('content-length')}, hash: {page_hash})\n"
+
 
         host = discovered_host()
         host.hostname = hostname
@@ -216,8 +209,8 @@ class virtual_host_scanner(object):
         host.content = response.content
 
         for key, val in response.headers.items():
-            output += '  {}: {}\n'.format(key, val)
-            host.keys.append('{}: {}'.format(key, val))
+            output += f'  {key}: {val}\n'
+            host.keys.append(f'{key}: {val}')
 
         print(output)
 

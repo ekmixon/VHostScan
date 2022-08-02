@@ -14,8 +14,7 @@ def user_wordlist(request, tmpdir_factory):
 
 @pytest.fixture()
 def wordlist():
-    wordlist = WordList()
-    return wordlist
+    return WordList()
 
 @pytest.fixture(scope="module")
 def default_wordlist():
@@ -30,16 +29,14 @@ class TestWordList(object):
     def test_get_wordlist_from_stdin(self, monkeypatch, wordlist):
         print(dir(TestWordList))
         stdin_wordlist = ['keyword1', 'keyword1']
-        expected_wordlist = []
-        expected_wordlist.extend(stdin_wordlist)
+        expected_wordlist = list(stdin_wordlist)
         monkeypatch.setattr(WordList, 'get_stdin_wordlist', (lambda x: stdin_wordlist))
         wordlist_result, wordlist_types = wordlist.get_wordlist()
         assert wordlist_result == expected_wordlist
 
     def test_get_wordlist_from_stdin_and_wordlist(self, monkeypatch, wordlist):
         stdin_wordlist = ['keyword1', 'keyword1']
-        expected_wordlist = []
-        expected_wordlist.extend(stdin_wordlist)
+        expected_wordlist = list(stdin_wordlist)
         expected_wordlist.extend(self.user_wordlist)
         monkeypatch.setattr(WordList, 'get_stdin_wordlist', (lambda x: stdin_wordlist))
         wordlist_result, wordlist_types = wordlist.get_wordlist(self.user_wordlist_file)

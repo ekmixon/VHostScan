@@ -9,7 +9,7 @@ def test_parse_arguments_default_value(tmpdir):
     wordlist.write('\n'.join(words))
 
     argv = ['-t', 'myhost']
-    
+
     arguments = cli_argument_parser().parse(argv)
 
     expected_arguments = {
@@ -36,7 +36,7 @@ def test_parse_arguments_default_value(tmpdir):
         'suffix': False,
         'verbose': False
     }
-    
+
     assert vars(arguments) == expected_arguments
 
 

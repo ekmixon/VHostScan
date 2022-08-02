@@ -20,8 +20,7 @@ class file_helper(object):
                 os.stat(directory)
             except:
                 os.mkdir(directory)
-                print("[!] {} didn't exist and has been created.".format(
-                    directory))
+                print(f"[!] {directory} didn't exist and has been created.")
 
     def write_file(self, contents):
         # check if host directory exists, if not create it
